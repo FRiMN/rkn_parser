@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - crm-db
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      EXPL_START: "2020-07-01"
+      EXPL_END: "2020-12-31"
+    command: "tail -f /dev/null"
+#    shm_size: '1gb'
+    mem_limit: '4gb'
+
+  crm-db:
+    build:
+      context: ./crmdbsync
+      dockerfile: Dockerfile_DB
+    ports:
+      - 3306:3306
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: root
